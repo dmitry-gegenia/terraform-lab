@@ -43,3 +43,13 @@ variable "subnet-private-2" {
   default = "10.0.4.0/24"
 }
 
+variable "instance-type" {
+  type    = string
+  default = "t2.micro"
+}
+
+variable "instance-image" {
+  type    = string
+  default = "ami-0e472ba40eb589f49"
+}
+
