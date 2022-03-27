@@ -34,3 +34,35 @@ resource "aws_autoscaling_group" "nginx-asg" {
     version = "$Latest"
   }
 }
+
+resource "aws_launch_template" "lab-php-lt" {
+  name                                 = "lab-php"
+  image_id                             = var.instance-image
+  instance_initiated_shutdown_behavior = "terminate"
+  instance_type                        = var.instance-type
+  key_name                             = "lab-key"
+  #  vpc_security_group_ids               = [aws_security_group.public-sg.id]
+  user_data = filebase64("${path.module}/userdata/php.sh")
+  lifecycle {
+    create_before_destroy = true
+  }
+  network_interfaces {
+    associate_public_ip_address = false
+    security_groups             = [aws_security_group.private-sg.id]
+    #    subnet_id                   = aws_subnet.name1.id
+    delete_on_termination = true
+  }
+}
+
+resource "aws_autoscaling_group" "php-asg" {
+  name                = "Lab-php-asg"
+  min_size            = 1
+  max_size            = 5
+  desired_capacity    = 1
+  vpc_zone_identifier = [aws_subnet.lab-private-subnet-1.id, aws_subnet.lab-private-subnet-2.id]
+
+  launch_template {
+    id      = aws_launch_template.lab-php-lt.id
+    version = "$Latest"
+  }
+}
