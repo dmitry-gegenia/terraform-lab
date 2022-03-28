@@ -21,7 +21,7 @@ resource "aws_eip" "lab-eip-2" {
 resource "aws_nat_gateway" "nat-subnet-1" {
   allocation_id     = aws_eip.lab-eip-1.id
   connectivity_type = "public"
-  subnet_id         = aws_subnet.lab-private-subnet-1.id
+  subnet_id         = aws_subnet.lab-public-subnet-1.id
   tags = {
     Name = "Lab private subnet 1 NAT"
   }
@@ -31,7 +31,7 @@ resource "aws_nat_gateway" "nat-subnet-1" {
 resource "aws_nat_gateway" "nat-subnet-2" {
   allocation_id     = aws_eip.lab-eip-2.id
   connectivity_type = "public"
-  subnet_id         = aws_subnet.lab-private-subnet-2.id
+  subnet_id         = aws_subnet.lab-public-subnet-2.id
   tags = {
     Name = "Lab private subnet 2 NAT"
   }

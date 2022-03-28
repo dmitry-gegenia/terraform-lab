@@ -18,7 +18,7 @@ resource "aws_subnet" "lab-public-subnet-2" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "lab-public-subnet-1-${var.az-b}"
+    Name = "lab-public-subnet-2-${var.az-b}"
     Tier = "Public"
   }
 }
@@ -31,7 +31,7 @@ resource "aws_subnet" "lab-private-subnet-1" {
 
   tags = {
     Name = "lab-private-subnet-1-${var.az-a}"
-    Tier = "Public"
+    Tier = "Private"
   }
 }
 
@@ -42,7 +42,7 @@ resource "aws_subnet" "lab-private-subnet-2" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "lab-private-subnet-1-${var.az-b}"
-    Tier = "Public"
+    Name = "lab-private-subnet-2-${var.az-b}"
+    Tier = "Private"
   }
 }

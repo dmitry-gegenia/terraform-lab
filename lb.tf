@@ -52,7 +52,7 @@ resource "aws_lb" "lab-php-lb" {
   internal           = true
   load_balancer_type = "network"
   #security_groups    = [aws_security_group.private-sg.id]
-  subnets            = [aws_subnet.lab-private-subnet-1.id, aws_subnet.lab-private-subnet-2.id]
+  subnets = [aws_subnet.lab-private-subnet-1.id, aws_subnet.lab-private-subnet-2.id]
 
   tags = {
     Environment = "Lab"
