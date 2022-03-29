@@ -63,3 +63,27 @@ resource "aws_security_group" "private-sg" {
     Name = "Lab-private-sg"
   }
 }
+
+resource "aws_security_group" "mysql-db-sg" {
+  name        = "lab-db-sg"
+  description = "Mysql DB security group"
+  vpc_id      = aws_vpc.lab.id
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    self        = false
+    cidr_blocks = [var.subnet-private-1, var.subnet-private-2]
+  }
+
+  egress {
+    from_port   = "0"
+    to_port     = "0"
+    protocol    = "-1"
+    self        = false
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "Mysql-SG"
+  }
+}
