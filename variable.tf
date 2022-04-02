@@ -53,3 +53,14 @@ variable "instance-image" {
   default = "ami-0e472ba40eb589f49"
 }
 
+
+variable "db_name" {
+  type    = string
+}
+variable "db_user" {
+  type    = string
+}
+
+variable "db_pass" {
+  type    = string
+}

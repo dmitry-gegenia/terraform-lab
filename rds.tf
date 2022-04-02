@@ -34,9 +34,9 @@ resource "aws_db_instance" "lab-db" {
   max_allocated_storage  = "100"
   engine                 = "mariadb"
   engine_version         = "10.6.7"
-  db_name                = "labdb"
-  username               = "admin"
-  password               = "12345678"
+  db_name                = var.db_name
+  username               = var.db_user
+  password               = var.db_pass
   skip_final_snapshot    = true
   parameter_group_name   = aws_db_parameter_group.mysqlpg.name
   db_subnet_group_name   = aws_db_subnet_group.lab-db-sg.name

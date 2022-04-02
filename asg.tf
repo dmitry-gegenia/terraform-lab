@@ -31,7 +31,7 @@ server {
     try_files $uri $uri/ =404;
   }
 
-  location ~ [^/]\.php(/|$) 
+  location ~ \.php$ {
     include snippets/fastcgi-php.conf;
     fastcgi_pass ${aws_lb.lab-php-lb.dns_name}:9000;
   }
@@ -100,7 +100,7 @@ EOFF
 sudo cat << 'EOFF' > /var/www/html/index.php
 <?php
   echo 'Default PHP webpage <br/>';
-  echo '<a href="db.php">DB TEST</a>'
+  echo '<a href="db.php">DB TEST</a>';
   echo '<a href="phpinfo.php">php info</a>';
 
 ?>
