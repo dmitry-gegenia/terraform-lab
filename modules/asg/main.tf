@@ -1,6 +1,6 @@
 resource "aws_key_pair" "lab-key" {
   key_name   = "lab-key"
-  public_key = file("keys/key.pub")
+  public_key = file("../../keys/key.pub")
 }
 
 resource "aws_launch_template" "lab-nginx-lt" {
@@ -9,9 +9,6 @@ resource "aws_launch_template" "lab-nginx-lt" {
   instance_initiated_shutdown_behavior = "terminate"
   instance_type                        = var.instance-type
   key_name                             = "lab-key"
-  #  vpc_security_group_ids               = [aws_security_group.public-sg.id]
-  #user_data = "${base64encode(file("${path.module}/userdata/nginx.sh"))}"
-  #user_data = filebase64("${path.module}/userdata/nginx.sh")
   user_data = "${base64encode(<<EOF
 #!/bin/bash
 sudo apt update -y
@@ -52,7 +49,6 @@ EOF
   network_interfaces {
     associate_public_ip_address = true
     security_groups             = [aws_security_group.public-sg.id]
-    #    subnet_id                   = aws_subnet.name1.id
     delete_on_termination = true
   }
   tags = {
@@ -62,9 +58,9 @@ EOF
 
 resource "aws_autoscaling_group" "nginx-asg" {
   name                = "Lab-nginx-asg"
-  min_size            = 1
-  max_size            = 5
-  desired_capacity    = 1
+  min_size            = var.as-min-size
+  max_size            = var.as-max-size
+  desired_capacity    = var.as-desired-capacity
   vpc_zone_identifier = [aws_subnet.lab-public-subnet-1.id, aws_subnet.lab-public-subnet-2.id]
 
   launch_template {
@@ -79,8 +75,6 @@ resource "aws_launch_template" "lab-php-lt" {
   instance_initiated_shutdown_behavior = "terminate"
   instance_type                        = var.instance-type
   key_name                             = "lab-key"
-  #  vpc_security_group_ids               = [aws_security_group.public-sg.id]
-  #user_data = filebase64("${path.module}/userdata/php.sh")
   user_data = "${base64encode(<<EOF
 #!/bin/bash
 sudo apt update -y
@@ -133,7 +127,6 @@ EOF
   network_interfaces {
     associate_public_ip_address = false
     security_groups             = [aws_security_group.private-sg.id]
-    #    subnet_id                   = aws_subnet.name1.id
     delete_on_termination = true
   }
   tags = {
@@ -143,9 +136,9 @@ EOF
 
 resource "aws_autoscaling_group" "php-asg" {
   name                = "Lab-php-asg"
-  min_size            = 1
-  max_size            = 5
-  desired_capacity    = 1
+  min_size            = var.min-size
+  max_size            = var.max-size
+  desired_capacity    = var.desired-capacity
   vpc_zone_identifier = [aws_subnet.lab-private-subnet-1.id, aws_subnet.lab-private-subnet-2.id]
 
   launch_template {
