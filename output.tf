@@ -8,3 +8,8 @@ output "php_dns_name" {
   description = "The domain name of the php load balancer"
 }
 
+output "rds" {
+  value       = aws_db_instance.lab-db.address
+  description = "RDS"
+
+}
