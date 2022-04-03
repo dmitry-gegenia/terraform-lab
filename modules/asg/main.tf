@@ -94,7 +94,7 @@ EOFF
 sudo cat << 'EOFF' > /var/www/html/index.php
 <?php
   echo 'Default PHP webpage <br/>';
-  echo '<a href="db.php">DB TEST</a>';
+  echo '<a href="db.php">DB TEST</a>  <br/>';
   echo '<a href="phpinfo.php">php info</a>';
 
 ?>
