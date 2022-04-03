@@ -1,48 +1,3 @@
-variable "region" {
-  type    = string
-  default = "us-east-1"
-}
-
-variable "profile" {
-  type    = string
-  default = "lab"
-}
-
-variable "az-a" {
-  type    = string
-  default = "us-east-1a"
-}
-
-variable "az-b" {
-  type    = string
-  default = "us-east-1b"
-}
-
-variable "vpc-cidr" {
-  type    = string
-  default = "10.0.0.0/16"
-}
-
-variable "subnet-public-1" {
-  type    = string
-  default = "10.0.1.0/24"
-}
-
-variable "subnet-public-2" {
-  type    = string
-  default = "10.0.2.0/24"
-}
-
-variable "subnet-private-1" {
-  type    = string
-  default = "10.0.3.0/24"
-}
-
-variable "subnet-private-2" {
-  type    = string
-  default = "10.0.4.0/24"
-}
-
 variable "instance-type" {
   type    = string
   default = "t2.micro"
@@ -68,13 +23,37 @@ variable "as-desired-capacity" {
   default = 1
 }
 
-variable "db_name" {
+variable "db-name" {
   type    = string
 }
-variable "db_user" {
+variable "db-user" {
   type    = string
 }
 
-variable "db_pass" {
+variable "db-pass" {
   type    = string
+}
+
+variable "db-host" {
+  type    = string
+}
+
+variable "public-security-groups" {
+  type = list(string)  
+}
+
+variable "private-security-groups" {
+  type = list(string)  
+}
+
+variable "php-dns-name" {
+  type = string  
+}
+
+variable "priv-vpc-zone-identifier" {
+  type =list(string)
+}
+
+variable "pub-vpc-zone-identifier" {
+  type =list(string)
 }

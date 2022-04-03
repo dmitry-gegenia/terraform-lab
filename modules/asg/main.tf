@@ -1,6 +1,6 @@
 resource "aws_key_pair" "lab-key" {
   key_name   = "lab-key"
-  public_key = file("../../keys/key.pub")
+  public_key = file("keys/key.pub")
 }
 
 resource "aws_launch_template" "lab-nginx-lt" {
@@ -30,16 +30,16 @@ server {
 
   location ~ \.php$ {
     include snippets/fastcgi-php.conf;
-    fastcgi_pass ${aws_lb.lab-php-lb.dns_name}:9000;
+    fastcgi_pass ${var.php-dns-name}:9000;
   }
 }
 EOFF
-
-sudo systemctl start nginx
-sudo systemctl enable nginx
 sudo touch /var/www/html/index.php
 sudo touch /var/www/html/phpinfo.php
 sudo touch /var/www/html/db.php
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo systemctl restart nginx
 EOF
 )}"
 
@@ -48,7 +48,7 @@ EOF
   }
   network_interfaces {
     associate_public_ip_address = true
-    security_groups             = [aws_security_group.public-sg.id]
+    security_groups             = var.public-security-groups
     delete_on_termination = true
   }
   tags = {
@@ -61,7 +61,7 @@ resource "aws_autoscaling_group" "nginx-asg" {
   min_size            = var.as-min-size
   max_size            = var.as-max-size
   desired_capacity    = var.as-desired-capacity
-  vpc_zone_identifier = [aws_subnet.lab-public-subnet-1.id, aws_subnet.lab-public-subnet-2.id]
+  vpc_zone_identifier = var.pub-vpc-zone-identifier
 
   launch_template {
     id      = aws_launch_template.lab-nginx-lt.id
@@ -102,10 +102,10 @@ EOFF
 
 sudo cat << 'EOFF' > /var/www/html/db.php
   <?php
-  $servername = "${aws_db_instance.lab-db.address}";
-  $username = "${aws_db_instance.lab-db.username}";
-  $password = "${aws_db_instance.lab-db.password}";
-  $db = "${aws_db_instance.lab-db.db_name}";
+  $servername = "${var.db-host}";
+  $username = "${var.db-user}";
+  $password = "${var.db-pass}";
+  $db = "${var.db-name}";
   try {
     $conn = new PDO("mysql:host=$servername;dbname=".$db, $username, $password);
     // set the PDO error mode to exception
@@ -126,7 +126,7 @@ EOF
   }
   network_interfaces {
     associate_public_ip_address = false
-    security_groups             = [aws_security_group.private-sg.id]
+    security_groups             = var.private-security-groups
     delete_on_termination = true
   }
   tags = {
@@ -136,10 +136,10 @@ EOF
 
 resource "aws_autoscaling_group" "php-asg" {
   name                = "Lab-php-asg"
-  min_size            = var.min-size
-  max_size            = var.max-size
-  desired_capacity    = var.desired-capacity
-  vpc_zone_identifier = [aws_subnet.lab-private-subnet-1.id, aws_subnet.lab-private-subnet-2.id]
+  min_size            = var.as-min-size
+  max_size            = var.as-max-size
+  desired_capacity    = var.as-desired-capacity
+  vpc_zone_identifier = var.priv-vpc-zone-identifier
 
   launch_template {
     id      = aws_launch_template.lab-php-lt.id

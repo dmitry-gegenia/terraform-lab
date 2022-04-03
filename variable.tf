@@ -54,27 +54,30 @@ variable "instance-image" {
 }
 
 variable "as-min-size" {
-  type = number
+  type    = number
   default = 1
 }
 
 variable "as-max-size" {
-  type = number
+  type    = number
   default = 5
 }
 
 variable "as-desired-capacity" {
-  type = number
+  type    = number
   default = 1
 }
 
 variable "db_name" {
-  type    = string
+  type        = string
+  description = "DB name"
 }
 variable "db_user" {
-  type    = string
+  type        = string
+  description = "DB user"
 }
 
 variable "db_pass" {
-  type    = string
+  type        = string
+  description = "DB pass"
 }

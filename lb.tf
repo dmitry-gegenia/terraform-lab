@@ -1,5 +1,5 @@
 resource "aws_lb" "lab-nginx-lb" {
-  name               = "lan-nginx"
+  name               = "lab-nginx"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.public-sg.id]
@@ -41,14 +41,14 @@ resource "aws_lb_listener" "lab-nginx-lb-l" {
 }
 
 resource "aws_autoscaling_attachment" "nginx-asg-attachment" {
-  autoscaling_group_name = aws_autoscaling_group.nginx-asg.id
+  autoscaling_group_name = module.asg_app.nginx-asg
   lb_target_group_arn    = aws_lb_target_group.lab-nginx-lb-tg.arn
 }
 
 
 #PHP
 resource "aws_lb" "lab-php-lb" {
-  name               = "lan-php"
+  name               = "lab-php"
   internal           = true
   load_balancer_type = "network"
   #security_groups    = [aws_security_group.private-sg.id]
@@ -65,14 +65,6 @@ resource "aws_lb_target_group" "lab-php-lb-tg" {
   target_type = "instance"
   vpc_id      = aws_vpc.lab.id
   protocol    = "TCP"
-  #   health_check {
-  #     enabled  = true
-  #     interval = 10
-  #     port     = 80
-  #     protocol = "HTTP"
-  #     path     = "/"
-  #     matcher  = "200-299"
-  #   }
   tags = {
     Name = "lab-backend-group"
   }
@@ -90,6 +82,6 @@ resource "aws_lb_listener" "lab-php-lb-l" {
 }
 
 resource "aws_autoscaling_attachment" "php-asg-attachment" {
-  autoscaling_group_name = aws_autoscaling_group.php-asg.id
+  autoscaling_group_name = module.asg_app.php-asg
   lb_target_group_arn    = aws_lb_target_group.lab-php-lb-tg.arn
 }
